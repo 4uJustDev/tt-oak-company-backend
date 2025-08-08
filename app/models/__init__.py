@@ -1,1 +1,1 @@
-from .models import User, Company, Contact, Photo
+from app.models.user_model import User
