@@ -37,6 +37,7 @@ from alembic import context
 config = context.config
 
 # Подменяем sqlalchemy.url на значение из .env
+print(DATABASE_URL)
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 target_metadata = Base.metadata
