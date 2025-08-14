@@ -7,3 +7,7 @@ run : uvicorn app.main:app --reload
 # Alembic
 alembic revision --autogenerate -m "comment" 
 alembic upgrade head
+
+# Docker 
+docker compose down      
+docker compose up -d --build  
