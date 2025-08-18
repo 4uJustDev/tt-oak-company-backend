@@ -1,11 +1,11 @@
 from pydantic import BaseModel, Field
-from app.models.user import UserRole
+from app.schemas.role import RoleOut
 
 
 class RegisterRequest(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=6)
-    role: UserRole = UserRole.user
+    role_id: int = Field(..., gt=0)
 
 
 class LoginRequest(BaseModel):
@@ -21,7 +21,7 @@ class TokenResponse(BaseModel):
 class UserResponse(BaseModel):
     id: int
     username: str
-    role: UserRole
+    role: RoleOut
 
     class Config:
         from_attributes = True

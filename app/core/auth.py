@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from app.config import JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRE_MINUTES
 from app import models
 from app.database import get_db
-from app.models.user import UserRole
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -63,9 +62,23 @@ def get_current_user_dep(
     return get_current_user(token, db)
 
 
+def require_role(role_name: str):
+    """Зависимость для проверки конкретной роли"""
+
+    def role_checker(current_user: models.User = Depends(get_current_user_dep)):
+        if not current_user.role or current_user.role.name != role_name:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Role '{role_name}' required",
+            )
+        return current_user
+
+    return role_checker
+
+
 def require_admin_role(current_user: models.User = Depends(get_current_user_dep)):
     """Зависимость для проверки прав администратора"""
-    if current_user.role != UserRole.admin:
+    if not current_user.role or current_user.role.name != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Admin privileges required"
         )

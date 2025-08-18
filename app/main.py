@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException
-from app.routers import auth
-from app.routers import company
+from app.routers import auth, company, role
 
 
 app = FastAPI(root_path="/api/project1", title="Company API")
 
 app.include_router(auth.router)
 app.include_router(company.router)
+app.include_router(role.router)
 
 
 @app.get("/")

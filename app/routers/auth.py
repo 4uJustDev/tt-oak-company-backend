@@ -8,8 +8,9 @@ from app.core.auth import (
     create_access_token,
     get_current_user_dep,
 )
-from app.models.user import User, UserRole
+from app.models.user import User
 from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse, UserResponse
+from app.crud import role as crud_role
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -23,11 +24,18 @@ def register(data: RegisterRequest, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists"
         )
 
+    # Проверка существования роли
+    role = crud_role.get_role(db, data.role_id)
+    if not role:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Role not found"
+        )
+
     try:
         new_user = User(
             username=data.username,
             password_hash=hash_password(data.password),
-            role=data.role,
+            role_id=data.role_id,
         )
         db.add(new_user)
         db.commit()
