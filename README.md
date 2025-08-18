@@ -12,7 +12,7 @@ alembic upgrade head
 docker compose down      
 docker compose up -d --build  
 
-TESTETSTTETTESTET32
+TESTETSTTETTESTET32321
 
 # API
 http://tamasaya.chickenkiller.com/api/project1/docs
