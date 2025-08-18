@@ -12,6 +12,8 @@ alembic upgrade head
 docker compose down      
 docker compose up -d --build  
 
+TESTETSTTETTESTET
+
 # API
 http://tamasaya.chickenkiller.com/api/project1/docs
 http://185.255.134.218/api/project1/docs
