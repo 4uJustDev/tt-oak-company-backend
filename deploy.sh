@@ -4,9 +4,9 @@ set -euo pipefail
 APP_DIR="$HOME/tt-oak-company-backend"
 cd "$APP_DIR"
 
-echo "[deploy] fetch/reset to origin/main…"
+echo "[deploy] fetch/reset to origin/master…"
 git fetch --all
-git reset --hard origin/main
+git reset --hard origin/master
 
 echo "[deploy] docker compose up -d --build…"
 docker compose pull || true
