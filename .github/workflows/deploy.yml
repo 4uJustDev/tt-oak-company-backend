@@ -2,7 +2,7 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
 
 jobs:
   deploy:
@@ -20,4 +20,4 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: 22
           script: |
-            bash ~/tt-oak-company-backend/deploy.sh
+            bash ~/deploy-tt-oak-company-backend.sh
