@@ -1,17 +1,23 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from app.database import get_db
 from app.schemas.company import CompanyCreate, CompanyUpdate, CompanyOut
 from app.crud import company as crud_company
+from app.core.auth import get_current_user_dep, require_admin_role
+from app.models.user import User
 from typing import List
-from app.core.auth import get_current_user_dep
-from sqlalchemy.exc import IntegrityError
 
 router = APIRouter(prefix="/companies", tags=["companies"])
 
 
 @router.post("/", response_model=CompanyOut)
-def create_company(company: CompanyCreate, db: Session = Depends(get_db)):
+def create_company(
+    company: CompanyCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin_role),
+):
+    """Создать новую компанию (только для администраторов)"""
     # Проверка на дубликат имени
     existing = crud_company.get_company_by_name(db, company.name)
     if existing:
@@ -30,12 +36,23 @@ def create_company(company: CompanyCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=List[CompanyOut])
-def read_companies(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_companies(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user_dep),
+):
+    """Получить список компаний (для авторизованных пользователей)"""
     return crud_company.get_companies(db, skip=skip, limit=limit)
 
 
 @router.get("/{company_id}", response_model=CompanyOut)
-def read_company(company_id: int, db: Session = Depends(get_db)):
+def read_company(
+    company_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user_dep),
+):
+    """Получить компанию по ID (для авторизованных пользователей)"""
     db_company = crud_company.get_company(db, company_id)
     if db_company is None:
         raise HTTPException(status_code=404, detail="Company not found")
@@ -44,8 +61,12 @@ def read_company(company_id: int, db: Session = Depends(get_db)):
 
 @router.patch("/{company_id}", response_model=CompanyOut)
 def update_company(
-    company_id: int, company: CompanyUpdate, db: Session = Depends(get_db)
+    company_id: int,
+    company: CompanyUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin_role),
 ):
+    """Обновить компанию (только для администраторов)"""
     # Если обновляется имя, проверяем дубликаты
     update_data = company.dict(exclude_unset=True)
     if "name" in update_data:
@@ -72,9 +93,10 @@ def update_company(
 def delete_company(
     company_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_user_dep),
+    current_user: User = Depends(require_admin_role),
 ):
+    """Удалить компанию (только для администраторов)"""
     deleted = crud_company.delete_company(db, company_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Company not found")
-    return {"message": "Company deleted"}
+    return {"message": "Company deleted successfully"}
