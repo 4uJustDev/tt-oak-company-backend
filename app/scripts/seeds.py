@@ -30,17 +30,22 @@ def seed_data(db: Session):
             {"name": "manager", "description": "Менеджер с расширенными правами"},
         ]
 
+        created_roles = {}
         for role_data in roles_data:
             existing_role = crud_role.get_role_by_name(db, role_data["name"])
             if not existing_role:
                 role = RoleCreate(**role_data)
                 created_role = crud_role.create_role(db, role)
-                print(f"✅ Создана роль: {created_role.name}")
+                created_roles[role_data["name"]] = created_role
+                print(f"✅ Создана роль: {created_role.name} (ID: {created_role.id})")
             else:
-                print(f"ℹ️  Роль {existing_role.name} уже существует")
+                created_roles[role_data["name"]] = existing_role
+                print(
+                    f"ℹ️  Роль {existing_role.name} уже существует (ID: {existing_role.id})"
+                )
 
         # Создаем админа, если его нет
-        admin_role = crud_role.get_role_by_name(db, "admin")
+        admin_role = created_roles.get("admin")
         if not admin_role:
             print("❌ Роль admin не найдена, создание админа пропущено")
             return
@@ -56,9 +61,17 @@ def seed_data(db: Session):
             )
             db.add(admin_user)
             db.commit()
-            print("✅ Создан админ пользователь: admin / admin123")
+            print(
+                f"✅ Создан админ пользователь: admin / admin123 (Role ID: {admin_role.id})"
+            )
         else:
-            print("ℹ️  Админ пользователь уже существует")
+            # Обновляем роль существующего админа
+            if existing_admin.role_id != admin_role.id:
+                existing_admin.role_id = admin_role.id
+                db.commit()
+                print(f"✅ Обновлена роль админа на admin (Role ID: {admin_role.id})")
+            else:
+                print("ℹ️  Админ пользователь уже существует с правильной ролью")
 
         print("🎉 Инициализация данных завершена успешно!")
 
