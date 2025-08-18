@@ -11,6 +11,10 @@ def get_companies(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Company).offset(skip).limit(limit).all()
 
 
+def get_company_by_name(db: Session, name: str):
+    return db.query(Company).filter(Company.name == name).first()
+
+
 def create_company(db: Session, company: CompanyCreate):
     db_company = Company(**company.dict())
     db.add(db_company)
