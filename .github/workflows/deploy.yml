@@ -20,4 +20,4 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: 22
           script: |
-            bash ~/deploy-tt-oak-company-backend.sh
+             bash ~/tt-oak-company-backend/deploy.sh
