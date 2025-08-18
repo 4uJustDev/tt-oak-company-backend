@@ -13,6 +13,7 @@ docker compose down
 docker compose up -d --build  
 
 TESTETSTTETTESTET32321321321321312321321
+еуые
 
 # API
 http://tamasaya.chickenkiller.com/api/project1/docs
