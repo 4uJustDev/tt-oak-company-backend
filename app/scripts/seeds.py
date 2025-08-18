@@ -1,4 +1,4 @@
-from app.db.session import SessionLocal
+from app.database import SessionLocal
 from app.models.user import User, Role  # твои модели
 from sqlalchemy.orm import Session
 
