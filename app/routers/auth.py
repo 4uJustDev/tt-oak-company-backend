@@ -17,25 +17,26 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/register", response_model=TokenResponse)
 def register(data: RegisterRequest, db: Session = Depends(get_db)):
-    """Регистрация нового пользователя"""
+    """Регистрация нового пользователя (создается с ролью user по умолчанию)"""
     # Проверка существования пользователя
     if db.query(User).filter(User.username == data.username).first():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists"
         )
 
-    # Проверка существования роли
-    role = crud_role.get_role(db, data.role_id)
-    if not role:
+    # Получаем роль user по умолчанию
+    user_role = crud_role.get_role_by_name(db, "user")
+    if not user_role:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Role not found"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Default user role not found",
         )
 
     try:
         new_user = User(
             username=data.username,
             password_hash=hash_password(data.password),
-            role_id=data.role_id,
+            role_id=user_role.id,
         )
         db.add(new_user)
         db.commit()

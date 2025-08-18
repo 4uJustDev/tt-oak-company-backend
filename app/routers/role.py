@@ -36,23 +36,14 @@ def create_role(
 
 
 @router.get("/", response_model=List[RoleOut])
-def read_roles(
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin_role),
-):
-    """Получить список ролей (только для администраторов)"""
+def read_roles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Получить список ролей (публичный доступ)"""
     return crud_role.get_roles(db, skip=skip, limit=limit)
 
 
 @router.get("/{role_id}", response_model=RoleOut)
-def read_role(
-    role_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_admin_role),
-):
-    """Получить роль по ID (только для администраторов)"""
+def read_role(role_id: int, db: Session = Depends(get_db)):
+    """Получить роль по ID (публичный доступ)"""
     db_role = crud_role.get_role(db, role_id)
     if db_role is None:
         raise HTTPException(status_code=404, detail="Role not found")

@@ -36,23 +36,14 @@ def create_company(
 
 
 @router.get("/", response_model=List[CompanyOut])
-def read_companies(
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user_dep),
-):
-    """Получить список компаний (для авторизованных пользователей)"""
+def read_companies(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Получить список компаний (публичный доступ)"""
     return crud_company.get_companies(db, skip=skip, limit=limit)
 
 
 @router.get("/{company_id}", response_model=CompanyOut)
-def read_company(
-    company_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user_dep),
-):
-    """Получить компанию по ID (для авторизованных пользователей)"""
+def read_company(company_id: int, db: Session = Depends(get_db)):
+    """Получить компанию по ID (публичный доступ)"""
     db_company = crud_company.get_company(db, company_id)
     if db_company is None:
         raise HTTPException(status_code=404, detail="Company not found")
