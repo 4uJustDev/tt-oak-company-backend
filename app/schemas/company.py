@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
+from app.schemas.photo import PhotoOut
 from datetime import date
 from enum import Enum
 
@@ -36,6 +37,7 @@ class CompanyUpdate(CompanyBase):
 
 class CompanyOut(CompanyBase):
     id: int
+    photos: Optional[List[PhotoOut]] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

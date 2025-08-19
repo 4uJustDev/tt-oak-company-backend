@@ -1,5 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from app.routers import auth, company, role
+from starlette.staticfiles import StaticFiles
+import os
+from app.config import MEDIA_ROOT
 
 
 app = FastAPI(root_path="/api/project1", title="Company API")
@@ -25,3 +28,8 @@ def health():
 async def http_exception_handler(_request, exc):
     """Глобальный обработчик HTTP исключений"""
     return {"error": exc.detail, "status_code": exc.status_code}
+
+
+# Static files for media (user-uploaded content)
+os.makedirs(MEDIA_ROOT, exist_ok=True)
+app.mount("/media", StaticFiles(directory=MEDIA_ROOT), name="media")

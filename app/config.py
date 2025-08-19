@@ -22,3 +22,8 @@ if not JWT_SECRET:
 
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES"))
+
+# Media configuration
+MEDIA_ROOT = os.getenv("MEDIA_ROOT", "media")
+# Thumbnail square size in pixels
+THUMBNAIL_SIZE = int(os.getenv("THUMBNAIL_SIZE", "256"))
