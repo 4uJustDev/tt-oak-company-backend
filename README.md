@@ -20,10 +20,6 @@ pip install -r requirements.txt
 ```
 
 4. **Настройте переменные окружения:**
-```bash
-cp env.example .env
-# Отредактируйте .env файл с вашими настройками
-```
 
 5. **Настройте базу данных:**
 ```bash
@@ -54,9 +50,6 @@ alembic upgrade head
 # Docker 
 docker compose down      
 docker compose up -d --build  
-
-TESTETSTTETTESTET32321321321321312321321
-еуые
 
 ## API
 http://tamasaya.chickenkiller.com/api/project1/docs

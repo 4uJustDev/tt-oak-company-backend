@@ -6,6 +6,10 @@
 import sys
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sqlalchemy.orm import Session
@@ -15,6 +19,12 @@ from app.models.role import Role
 from app.core.auth import hash_password
 from app.crud import role as crud_role
 from app.schemas.role import RoleCreate
+
+admin_password = os.getenv("ADMIN_PASSWORD")
+
+if not admin_password:
+    print("ADMIN_PASSWORD environment variable is required")
+    exit(1)
 
 
 def seed_data(db: Session):
@@ -54,9 +64,7 @@ def seed_data(db: Session):
         if not existing_admin:
             admin_user = User(
                 username="admin",
-                password_hash=hash_password(
-                    "admin123"
-                ),  # Измените пароль на более безопасный
+                password_hash=hash_password(admin_password),
                 role_id=admin_role.id,
             )
             db.add(admin_user)
