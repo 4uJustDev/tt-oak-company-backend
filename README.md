@@ -21,16 +21,28 @@ pip install -r requirements.txt
 
 4. **Настройте переменные окружения:**
 
-5. **Настройте базу данных:**
-```bash
-# Создайте базу данных PostgreSQL
-createdb company_api
+# === Database ===
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+DB_PORT=
+# === JWT Auth ===
+JWT_SECRET=
+JWT_ALGORITHM=
+JWT_EXPIRE_MINUTES=
+# === For scripts ===
+ADMIN_PASSWORD=
 
-# Примените миграции
+
+5. **Создайте базу данных:**
+Название БД в .env DB_NAME задается.
+
+6. **Примените миграции:**
+```bash
 alembic upgrade head
 ```
 
-6. **Запустите приложение:**
+7. **Запустите приложение:**
 ```bash
 uvicorn app.main:app --reload
 ```
@@ -52,7 +64,7 @@ docker compose down
 docker compose up -d --build  
 
 ## API
-http://tamasaya.chickenkiller.com/api/project1/docs
+http://tamasaya.ru/api/project1/docs
 http://185.255.134.218/api/project1/docs
 
 ## Стэк
